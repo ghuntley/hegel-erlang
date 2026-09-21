@@ -1,0 +1,6 @@
+name = "hegel"
+version = "0.1.0"
+description = "Erlang-first Hegel SDK"
+licences = ["MIT"]
+repository = { type = "github", user = "ghuntley", repo = "hegel-erlang" }
+gleam = ">= 1.17.0 and < 2.0.0"

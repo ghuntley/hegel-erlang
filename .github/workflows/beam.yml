@@ -1,0 +1,35 @@
+name: beam
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - otp: "27"
+            elixir: "1.18"
+            gleam: "1.17.2"
+          - otp: "28"
+            elixir: "1.19"
+            gleam: "1.18.1"
+          - otp: "29"
+            elixir: "1.20"
+            gleam: "1.18.1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+          gleam-version: ${{ matrix.gleam }}
+          rebar3-version: "3"
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release --manifest-path native/hegel_nif/Cargo.toml
+      - run: rebar3 eunit
+      - run: mix test
+        working-directory: packages/hegel_ex
+      - run: gleam test
+        working-directory: packages/hegel_gleam
