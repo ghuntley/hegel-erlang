@@ -1,0 +1,26 @@
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# Build artifacts
+_build/
+deps/
+packages/*/_build/
+packages/*/deps/
+packages/*/build/
+native/hegel_nif/target/
+/priv/native/
+examples/*/_build/
+examples/*/deps/
+examples/*/build/
+examples/*/.gleam/
+/examples/erlang/rebar.lock
+.hegel/
+*.beam

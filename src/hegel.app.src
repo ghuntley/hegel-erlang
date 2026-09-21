@@ -1,0 +1,10 @@
+{application, hegel, [
+  {description, "Property-based testing for the BEAM, powered by Hegel"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [kernel, stdlib]},
+  {env, []},
+  {modules, []},
+  {licenses, ["MIT"]},
+  {links, [{"Hegel", "https://hegel.dev"}]}
+]}.

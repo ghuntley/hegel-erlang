@@ -1,0 +1,14 @@
+[package]
+name = "hegel_nif"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.86"
+license = "MIT"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+rustler = { version = "=0.38.0", default-features = false, features = ["nif_version_2_17"] }
+hegeltest-c = { version = "=0.43.1" }

@@ -1,0 +1,12 @@
+name = "hegel_gleam_example"
+version = "0.1.0"
+description = "Gleam example application for Hegel"
+licences = ["MIT"]
+gleam = ">= 1.17.0 and < 2.0.0"
+
+[dependencies]
+gleam_stdlib = ">= 0.44.0 and < 2.0.0"
+hegel_gleam = { path = "../../packages/hegel_gleam" }
+
+[dev-dependencies]
+gleeunit = ">= 1.9.0 and < 2.0.0"

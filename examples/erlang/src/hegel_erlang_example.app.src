@@ -1,0 +1,6 @@
+{application, hegel_erlang_example, [
+  {description, "Erlang example application for Hegel"},
+  {vsn, "0.1.0"},
+  {applications, [kernel, stdlib, hegel]},
+  {modules, []}
+]}.
