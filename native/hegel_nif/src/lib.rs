@@ -635,6 +635,11 @@ fn float<'a>(env: Env<'a>, tc: ResourceArc<CaseResource>, min: f64, max: f64) ->
 }
 #[rustler::nif]
 fn bytes<'a>(env: Env<'a>, tc: ResourceArc<CaseResource>, min: u64, max: u64) -> Term<'a> {
+    // hegeltest-c allocates `min` zero bytes up front and panics past
+    // isize::MAX; the panic cannot unwind out of the C ABI and aborts the VM.
+    if min > isize::MAX as u64 {
+        return error_tuple(env, "bytes min_size exceeds isize::MAX");
+    }
     with_case(
         env,
         &tc,
