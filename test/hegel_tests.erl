@@ -54,3 +54,10 @@ flaky_property() ->
             _ -> ok
         end
     end.
+
+oversized_binary_is_an_error_not_an_abort_test() ->
+    Size = 1 bsl 64 - 1,
+    ?assertMatch(#{status := passed},
+        hegel:run(fun(TC) ->
+            ?assertError({hegel_native, _}, hegel:draw(TC, "b", hegel_gen:binary(Size, Size)))
+        end, #{test_cases => 1, database => disabled})).
