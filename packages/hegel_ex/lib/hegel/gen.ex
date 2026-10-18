@@ -39,7 +39,44 @@ defmodule Hegel.Gen do
   def uniq_list_of(generator, options \\ []) do
     min = Keyword.get(options, :min, 0)
     max = Keyword.get(options, :max, 16)
-    map(list(generator, min: min, max: max), &Enum.uniq/1)
+
+    generator =
+      if is_tuple(generator) and elem(generator, 0) != :gen,
+        do: tuple(Tuple.to_list(generator)),
+        else: generator
+
+    bind(integer(min..max), fn target ->
+      :hegel_gen.custom(
+        fn test_case -> draw_uniq(generator, test_case, target, min, MapSet.new(), [], 0) end,
+        fn format, args -> :io_lib.format(format, args) end
+      )
+    end)
+  end
+
+  # Give up after this many duplicate draws in a row.
+  @uniq_max_tries 10
+
+  defp draw_uniq(generator, test_case, target, min, seen, acc, tries) do
+    count = MapSet.size(seen)
+
+    cond do
+      count == target ->
+        Enum.reverse(acc)
+
+      tries == @uniq_max_tries ->
+        # Too few distinct values for `min`: reject the case instead of returning a short list.
+        if count < min, do: :hegel.reject()
+        Enum.reverse(acc)
+
+      true ->
+        value = :hegel_gen.run(generator, test_case)
+
+        if MapSet.member?(seen, value) do
+          draw_uniq(generator, test_case, target, min, seen, acc, tries + 1)
+        else
+          draw_uniq(generator, test_case, target, min, MapSet.put(seen, value), [value | acc], 0)
+        end
+    end
   end
 
   @spec optional(term(), keyword()) :: term()
