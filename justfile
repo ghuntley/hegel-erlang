@@ -1,5 +1,8 @@
 native:
     cargo build --release --manifest-path native/hegel_nif/Cargo.toml
+    # erlang:load_nif/2 looks for a .so file on every Unix, including macOS.
+    # Copy then rename, so a VM that has the old .so mapped keeps its file.
+    if [ -f native/hegel_nif/target/release/libhegel_nif.dylib ]; then cp native/hegel_nif/target/release/libhegel_nif.dylib native/hegel_nif/target/release/libhegel_nif.so.tmp && mv native/hegel_nif/target/release/libhegel_nif.so.tmp native/hegel_nif/target/release/libhegel_nif.so; fi
 
 compile: native
     rebar3 compile
