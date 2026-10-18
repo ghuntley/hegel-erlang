@@ -54,3 +54,12 @@ flaky_property() ->
             _ -> ok
         end
     end.
+
+spawned_worker_has_current_test_case_test() ->
+    ?assertEqual(#{status => passed, failures => []},
+        hegel:run(fun(TC) ->
+            Task = hegel_process:spawn(TC, fun(_) ->
+                hegel:draw(hegel:current_test_case(), "x", hegel_gen:integer(0, 10))
+            end),
+            ?assert(is_integer(hegel_process:await(Task)))
+        end, #{test_cases => 5, database => disabled})).
