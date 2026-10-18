@@ -13,8 +13,8 @@ defmodule Hegel do
   defmacro __using__(_options) do
     quote do
       require Hegel
-      import Hegel, only: [property: 2, property: 3, property: 4, draw: 1, draw: 2]
-      import Hegel, only: [check: 2, gen: 2]
+      import Hegel,
+        only: [property: 2, property: 3, property: 4, draw: 1, draw: 2, check: 2, gen: 2]
       import Hegel.Gen
     end
   end
