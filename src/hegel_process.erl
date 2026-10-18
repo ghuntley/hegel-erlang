@@ -8,4 +8,6 @@ await({Pid, Ref}) -> receive
         case Result of {ok, V} -> V; {raise, C, R, S} -> erlang:raise(C, R, S) end;
     {'DOWN', Ref, process, Pid, Reason} -> exit(Reason)
 end.
-execute(Fun, TC) -> try {ok, Fun(TC)} catch C:R:S -> {raise, C, R, S} end.
+execute(Fun, TC) ->
+    put('$hegel_test_case', TC),
+    try {ok, Fun(TC)} catch C:R:S -> {raise, C, R, S} end.
