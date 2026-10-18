@@ -25,14 +25,17 @@ check(Property, Options) ->
 run(Property) -> run(Property, #{}).
 run(Property, Options0) when is_function(Property, 1), is_map(Options0) ->
     Options = defaults(Options0),
-    {ok, Run} = hegel_native:run_start(
+    case hegel_native:run_start(
         atom_to_binary(maps:get(profile, Options)), maps:get(test_cases, Options),
         seed_value(maps:get(seed, Options)), optional(maps:get(derandomize, Options)),
         maps:get(report_multiple_failures, Options), maps:get(show_statistics, Options),
         maps:get(print_blob, Options), database_value(maps:get(database, Options)),
-        location_value(maps:get(location, Options))),
-    Discovery = drive(Run, Property, []),
-    finish(Run, Property, Options, Discovery).
+        location_value(maps:get(location, Options))) of
+        {ok, Run} ->
+            Discovery = drive(Run, Property, []),
+            finish(Run, Property, Options, Discovery);
+        {error, Reason} -> #{status => error, error => Reason, failures => []}
+    end.
 
 reproduce(Property, Blob) -> reproduce(Property, Blob, #{}).
 reproduce(Property, Blob, Options0) ->
