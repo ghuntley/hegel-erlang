@@ -776,6 +776,13 @@ fn printer_output<'a>(env: Env<'a>, printer: ResourceArc<PrinterResource>) -> Te
         Err(_) => return error_tuple(env, "printer lock poisoned"),
     };
     let ctx = Context::new();
+    // Every `clone_case` opens a deferred slot for the clone's output, and
+    // `hegel_printer_value` refuses a document with an unresolved one. Resolve
+    // first. The result is ignored: with no clones there is nothing to resolve,
+    // and a layout error in the spliced content is reported again below.
+    unsafe {
+        let _ = hegel_c::hegel_printer_resolve(ctx.0, guard.0);
+    }
     let mut value = hegel_c::hegel_printer_value_result_t {
         data: ptr::null_mut(),
         len: 0,
