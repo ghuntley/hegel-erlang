@@ -87,6 +87,11 @@ defmodule Mix.Tasks.Compile.HegelNif do
       )
 
     if status != 0, do: Mix.raise("Hegel native engine failed to build:\n#{result}")
+
+    # cargo names the library .dylib on macOS; erlang:load_nif/2 still wants .so.
+    dylib = Path.rootname(output) <> ".dylib"
+    if File.exists?(dylib), do: install_native!(dylib, output)
+
     unless File.exists?(output), do: Mix.raise("Hegel native engine did not produce #{output}")
     output
   end
