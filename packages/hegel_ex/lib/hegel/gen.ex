@@ -45,7 +45,9 @@ defmodule Hegel.Gen do
   @spec optional(term(), keyword()) :: term()
   def optional(generator, options \\ []) do
     probability = Keyword.get(options, :probability, 0.5)
-    frequency([{probability, constant(nil)}, {1.0 - probability, generator}])
+    # :hegel_gen.frequency/1 takes integer weights.
+    nil_weight = round(probability * 1000)
+    frequency([{nil_weight, constant(nil)}, {1000 - nil_weight, generator}])
   end
 
   @spec string(keyword()) :: term()
