@@ -57,7 +57,7 @@ defmodule Hegel.Gen do
       case Keyword.get(options, :kind) do
         values when is_list(values) -> member_of(values)
         :alphanumeric -> one_of([integer(48..57), integer(65..90), integer(97..122)])
-        :utf8 -> integer(0..127)
+        :utf8 -> map(integer(0..0x10F7FF), &utf8_codepoint/1)
         _ -> integer(32..126)
       end
 
@@ -65,6 +65,10 @@ defmodule Hegel.Gen do
   end
 
   def string(kind, options), do: string(Keyword.put(options, :kind, kind))
+
+  # Every Unicode scalar value: skip the surrogates 0xD800..0xDFFF, which UTF-8 cannot encode.
+  defp utf8_codepoint(n) when n < 0xD800, do: n
+  defp utf8_codepoint(n), do: n + 0x800
 
   @spec map_of(term(), term(), keyword()) :: term()
   def map_of(key, value, options \\ []) do
